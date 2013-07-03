@@ -15,14 +15,15 @@
 		{{/if}}
 	{{else}}
 		{{#if defaultValue}}
-			<input minlength='0' name='{{name}}' placeholder='' type='text' value='{{defaultValue}}'/>
+			<input class='parameter' minlength='0' name='{{name}}' placeholder='' type='text' value='{{defaultValue}}'/>
 		{{else}}
-			<input minlength='0' name='{{name}}' placeholder='' type='text' value=''/>
+			<input class='parameter' minlength='0' name='{{name}}' placeholder='' type='text' value=''/>
 		{{/if}}
 	{{/if}}
 
 </td>
 <td>{{{description}}}</td>
+<td>{{{paramType}}}</td>
 <td>
 	<span class="model-signature"></span>
 </td>

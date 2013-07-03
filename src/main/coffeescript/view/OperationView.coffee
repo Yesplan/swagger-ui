@@ -100,7 +100,7 @@ class OperationView extends Backbone.View
 
         # add params except file
         for param in @model.parameters
-          if param.paramType is 'body' and param.name isnt 'file'
+          if (param.paramType is 'body' or 'form') and param.name isnt 'file' and param.name isnt 'File' and map[param.name]?
             bodyParam.append(param.name, map[param.name])
 
         # add files
@@ -111,7 +111,8 @@ class OperationView extends Backbone.View
       else if isFormPost
         bodyParam = new FormData()
         for param in @model.parameters
-          bodyParam.append(param.name, map[param.name])
+          if map[param.name]?
+            bodyParam.append(param.name, map[param.name])
       else
         bodyParam = null
         for param in @model.parameters
@@ -152,6 +153,13 @@ class OperationView extends Backbone.View
       paramContentTypeField = $("td select[name=contentType]", $(@el)).val()
       if paramContentTypeField
         obj.contentType = paramContentTypeField
+
+      log 'content type = ' + obj.contentType
+
+      if not (obj.data or (obj.type is 'GET' or obj.type is 'DELETE')) and obj.contentType is not "application/x-www-form-urlencoded"
+        obj.contentType = false
+
+      log 'content type is now = ' + obj.contentType
 
       responseContentTypeField = $('.content > .content-type > div > select[name=contentType]', $(@el)).val()
       if responseContentTypeField
@@ -260,5 +268,5 @@ class OperationView extends Backbone.View
     hljs.highlightBlock($('.response_body', $(@el))[0])
 
   toggleOperationContent: ->
-    elem = $('#' + @model.resourceName + "_" + @model.nickname + "_" + @model.httpMethod + "_" + @model.number + "_content")
+    elem = $('#' + Docs.escapeResourceName(@model.resourceName) + "_" + @model.nickname + "_" + @model.httpMethod + "_" + @model.number + "_content")
     if elem.is(':visible') then Docs.collapseOperation(elem) else Docs.expandOperation(elem)
