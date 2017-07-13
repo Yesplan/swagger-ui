@@ -1,101 +1,241 @@
-Swagger UI
-==========
+# Swagger UI
 
-Swagger UI is part of [Swagger](http://swagger.wordnik.com/) project.  The Swagger project allows you to produce, visualize and consume your OWN RESTful
-services.  No proxy or 3rd party services required.  Do it your own way.
+[![NPM version](https://badge.fury.io/js/swagger-ui.svg)](http://badge.fury.io/js/swagger-ui)
 
-Swagger UI is a dependency-free collection of HTML, Javascript, and CSS assets that dynamically
-generate beautiful documentation and sandbox from a [Swagger-compliant](https://github.com/wordnik/swagger-core/wiki) API. Because Swagger UI has no
-dependencies, you can host it in any server environment, or on your local machine.
+## New!
 
-How to Use It
--------------
+**This is the new version of swagger-ui, 3.x. Want to learn more? Check out our [FAQ](http://swagger.io/new-ui-faq/).**
 
-### Download
-You can use the swagger-ui code AS-IS!  No need to build or recompile--just clone this repo and use the pre-built files in the `dist` folder.  If you like swagger-ui as-is, stop here.
+**👉🏼 Want to score an easy open-source contribution?** Check out our [Good first contribution](https://github.com/swagger-api/swagger-ui/issues?q=is%3Aissue+is%3Aopen+label%3A%22Good+first+contribution%22) label.
 
-### Build
-You can rebuild swagger-ui on your own to tweak it or just so you can say you did.  To do so, follow these steps:
+As a brand new version, written from the ground up, there are some known issues and unimplemented features. Check out the [Known Issues](#known-issues) section for more details.
 
-1. npm install
-2. npm run-script build
-3. You should see the distribution under the dist folder. Open ./dist/index.html to launch Swagger UI in a browser
+This repo publishes to two different NPM packages:
 
-### Use
-Once you open the Swagger UI, it will load the [Swagger Petstore](http://petstore.swagger.wordnik.com/api/resources.json) service and show its APIs.
-You can enter your own server url and click explore to view the API.
+* [swagger-ui](https://www.npmjs.com/package/swagger-ui) is intended for use as a node module.
+* [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist) comes pre-bundled with all dependencies and can be incorporated directly in a webapp.
 
-### Customize
-You may choose to customize Swagger UI for your organization. Here is an overview of whats in its various directories:
+For the older version of swagger-ui, refer to the [*2.x branch*](https://github.com/swagger-api/swagger-ui/tree/2.x).
 
--    dist: Contains a distribution which you can deploy on a server or load from your local machine.
--    bin: Contains files used by swagger-ui for its build/test. These are not required by the distribution.
--    lib: Contains javascript dependencies which swagger-ui depends on
--    node_modules: Contains node modules which swagger-ui uses for its development.
--    src
-    -    src/main/coffeescript: main code in CoffeeScript
-    -    src/main/templates: [handlebars](http://handlebarsjs.com/) templates used to render swagger-ui
-    -    src/main/html: the html files, some images and css
-    -    src/main/javascript: some legacy javascript referenced by CoffeeScript code
+## Compatibility
+The OpenAPI Specification has undergone 4 revisions since initial creation in 2010.  Compatibility between swagger-ui and the OpenAPI Specification is as follows:
 
-### SwaggerUi
-To use swagger-ui you should take a look at the [source of swagger-ui html page](https://github.com/wordnik/swagger-ui/tree/master/src/main/html) and customize it. This basically requires you to instantiate a SwaggerUi object and call load() on it as below:
-```javascript
-    window.swaggerUi = new SwaggerUi({
-        discoveryUrl:"http://petstore.swagger.wordnik.com/api/resources.json",
-        dom_id:"swagger-ui-container",
-        apiKey:"special-key",
-        supportHeaderParams: false,
-        headers: { "Authorization": "XXXX", "someOtherHeader": "YYYY" },
-        supportedSubmitMethods: ['get', 'post', 'put']
-    });
+Swagger UI Version | Release Date | OpenAPI Spec compatibility | Notes | Status
+------------------ | ------------ | -------------------------- | ----- | ------
+3.0.18              | 2017-07-07   | 2.0                        | [tag v3.0.18](https://github.com/swagger-api/swagger-ui/tree/v3.0.18) |
+2.2.10             | 2017-01-04   | 1.1, 1.2, 2.0              | [tag v2.2.10](https://github.com/swagger-api/swagger-ui/tree/v2.2.10) |
+2.1.5              | 2016-07-20   | 1.1, 1.2, 2.0              | [tag v2.1.5](https://github.com/swagger-api/swagger-ui/tree/v2.1.5) |
+2.0.24             | 2014-09-12   | 1.1, 1.2 | [tag v2.0.24](https://github.com/swagger-api/swagger-ui/tree/v2.0.24) |
+1.0.13             | 2013-03-08   | 1.1, 1.2 | [tag v1.0.13](https://github.com/swagger-api/swagger-ui/tree/v1.0.13) |
+1.0.1              | 2011-10-11   | 1.0, 1.1 | [tag v1.0.1](https://github.com/swagger-api/swagger-ui/tree/v1.0.1)   |
 
-    window.swaggerUi.load();
+
+### How to run
+
+##### Easy start!  Docker
+You can pull a pre-built docker image of the swagger-ui directly from Dockerhub:
+
 ```
-* *discoveryUrl* parameter should point to a resource listing url as per [Swagger Spec](https://github.com/wordnik/swagger-core/wiki)
-* *dom_id parameter* is the the id of a dom element inside which SwaggerUi will put the user interface for swagger
-* *booleanValues* SwaggerUI renders boolean data types as a dropdown. By default it provides a 'true' and 'false' string as the possible choices. You can use this parameter to change the values in dropdown to be something else, for example 0 and 1 by setting booleanValues to new Array(0, 1)
-* *docExpansion* controls how the API listing is displayed. It can be set to 'none' (default), 'list' (shows operations for each resource), or 'full' (fully expanded: shows operations and their details)
-* *onComplete* is a callback function parameter which can be passed to be notified of when SwaggerUI has completed rendering successfully.
-* *onFailure* is a callback function parameter which can be passed to be notified of when SwaggerUI encountered a failure was unable to render.
-* All other parameters are explained in greater detail below
+docker pull swaggerapi/swagger-ui
+docker run -p 80:8080 swaggerapi/swagger-ui
+```
 
+Will start nginx with swagger-ui on port 80.
 
-### HTTP Methods and API Invocation
-swagger-ui supports invocation of all HTTP methods APIs but only GET methods APIs are enabled by default. You can choose to enable other HTTP methods like POST, PUT and DELETE. This can be enabled by [setting the supportedSubmitMethods parameter when creating SwaggerUI instance](https://github.com/wordnik/swagger-ui/blob/f2e63c65a759421aad590b7275371cd0c06c74ea/src/main/html/index.html#L49).
+Or you can provide your own swagger.json on your host
 
-For example if you wanted to enable GET, POST and PUT but not for DELETE, you'd set this as:
+```
+docker run -p 80:8080 -e "SWAGGER_JSON=/foo/swagger.json" -v /bar:/foo swaggerapi/swagger-ui
+```
 
-    supportedSubmitMethods: ['get', 'post', 'put']
+##### Prerequisites
+- Node 6.x
+- NPM 3.x
 
-_Note that for POST/PUT body, you'd need to paste in the request data in an appropriate format which your service can unmarshall_
+If you just want to see your specs, open `dist/index.html` in your browser directly from your filesystem.
 
-### Header Parameters
-header parameters are supported. However because of [Cross-Origin Resource Sharing](http://www.w3.org/TR/cors/) restrictions, swagger-ui, by default, does not send header parameters. This can be enabled by [setting the supportHeaderParams to true when creating SwaggerUI instance](https://github.com/wordnik/swagger-ui/blob/f2e63c65a759421aad590b7275371cd0c06c74ea/src/main/html/index.html#L48) as below:
+If you'd like to make modifications to the codebase, run the dev server with: `npm run dev`. A development server will open on `3200`.
 
-    supportHeaderParams: true
+If you'd like to rebuild the `/dist` folder with your codebase changes, run `npm run build`.
 
-### Custom Header Parameters - (For Basic auth etc)
-If you have some header parameters which you need to send with every request, use the headers as below:
+##### Browser support
+Swagger UI works in the latest versions of Chrome, Safari, Firefox, Edge and IE11.
 
-     headers: { "Authorization": "XXXX", "someOtherHeader": "YYYY" }
+### Known Issues
 
-### Api Key Parameter
-If you enter an api key in swagger-ui, it sends a parameter named 'api\_key' as a query (or as a header param if you've enabled it as described above). You may not want to use the name 'api\_key' as the name of this parameter. You can change its name by setting the _apiKeyName_ parameter when you instantiate a SwaggerUI instance. For example to call it 'sessionId'
+To help with the migration, here are the currently known issues with 3.X. This list will update regularly, and will not include features that were not implemented in previous versions.
 
-    apiKeyName: "sessionId"
+- Only part of the [parameters](#parameters) previously supported are available.
+- The JSON Form Editor is not implemented.
+- Shebang URL support for operations is missing.
+- Support for `collectionFormat` is partial.
+- l10n (translations) is not implemented.
+- Relative path support for external files is not implemented.
 
-How to Improve It
------------------
+### Direct use of JS and CSS assets
+To include the JS, CSS and image assets directly into a webpage, use the [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist) package.
+The root directory of this package contains the contents of the _dist/_ directory of this repo.
+As a node module, `swagger-ui-dist` also exports the `swagger-ui-bundle` and `swagger-ui-standalone-preset` objects.
 
-Create your own fork of [wordnik/swagger-ui](https://github.com/wordnik/swagger-ui)
+### SwaggerUIBundle
+To use swagger-ui's bundles, you should take a look at the [source of swagger-ui html page](https://github.com/swagger-api/swagger-ui/blob/master/dist/index.html) and customize it. This basically requires you to instantiate a SwaggerUi object as below:
 
-To share your changes, [submit a pull request](https://github.com/wordnik/swagger-ui/pull/new/master).
+```javascript
+  const ui = SwaggerUIBundle({
+    url: "http://petstore.swagger.io/v2/swagger.json",
+    dom_id: '#swagger-ui',
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  })
+```
 
-License
--------
+#### OAuth2 configuration
+You can configure OAuth2 authorization by calling `initOAuth` method with passed configs under the instance of `SwaggerUIBundle`
+default `client_id` and `client_secret`, `realm`, an application name `appName`, `scopeSeparator`, `additionalQueryStringParams`.
 
-Copyright 2011-2013 Wordnik, Inc.
+Config Name | Description
+--- | ---
+client_id | Default clientId. MUST be a string
+client_secret | Default clientSecret. MUST be a string
+realm | realm query parameter (for oauth1) added to `authorizationUrl` and `tokenUrl` . MUST be a string
+appName | application name, displayed in authorization popup. MUST be a string
+scopeSeparator | scope separator for passing scopes, encoded before calling, default value is a space (encoded value `%20`). MUST be a string
+additionalQueryStringParams | Additional query parameters added to `authorizationUrl` and `tokenUrl`. MUST be an object
+
+```
+const ui = SwaggerUIBundle({...})
+
+// Method can be called in any place after calling constructor SwaggerUIBundle
+ui.initOAuth({
+    clientId: "your-client-id",
+    clientSecret: "your-client-secret-if-required",
+    realm: "your-realms",
+    appName: "your-app-name",
+    scopeSeparator: " ",
+    additionalQueryStringParams: {test: "hello"}
+  })
+```
+
+If you'd like to use the bundle files via npm, check out the [`swagger-ui-dist` package](https://www.npmjs.com/package/swagger-ui-dist).
+
+#### Parameters
+
+Parameters with dots in their names are single strings used to organize subordinate parameters, and are not indicative of a nested structure.
+
+Parameter Name | Description
+--- | ---
+url | The url pointing to API definition (normally `swagger.json` or `swagger.yaml`). Will be ignored if `urls` or `spec` is used.
+urls | An array of API definition objects (`{url: "<url>", name: "<name>"}`) used by Topbar plugin. When used and Topbar plugin is enabled, the `url` parameter will not be parsed. Names and URLs must be unique among all items in this array, since they're used as identifiers.
+urls.primaryName | When using `urls`, you can use this subparameter. If the value matches the name of a spec provided in `urls`, that spec will be displayed when Swagger-UI loads, instead of defaulting to the first spec in `urls`.
+spec | A JSON object describing the OpenAPI Specification. When used, the `url` parameter will not be parsed. This is useful for testing manually-generated specifications without hosting them.
+validatorUrl | By default, Swagger-UI attempts to validate specs against swagger.io's online validator. You can use this parameter to set a different validator URL, for example for locally deployed validators ([Validator Badge](https://github.com/swagger-api/validator-badge)). Setting it to `null` will disable validation.
+dom_id | The id of a dom element inside which SwaggerUi will put the user interface for swagger.
+oauth2RedirectUrl | OAuth redirect URL
+operationsSorter | Apply a sort to the operation list of each API. It can be 'alpha' (sort by paths alphanumerically), 'method' (sort by HTTP method) or a function (see Array.prototype.sort() to know how sort function works). Default is the order returned by the server unchanged.
+configUrl | Configs URL
+parameterMacro | MUST be a function. Function to set default value to parameters. Accepts two arguments parameterMacro(operation, parameter). Operation and parameter are objects passed for context, both remain immutable
+modelPropertyMacro | MUST be a function. Function to set default values to each property in model. Accepts one argument modelPropertyMacro(property), property is immutable
+docExpansion | Controls the default expansion setting for the operations and tags. It can be 'list' (expands only the tags), 'full' (expands the tags and operations) or 'none' (expands nothing). The default is 'list'.
+displayOperationId | Controls the display of operationId in operations list. The default is `false`.
+displayRequestDuration | Controls the display of the request duration (in milliseconds) for `Try it out` requests. The default is `false`.
+
+### Plugins
+
+#### Topbar plugin
+Topbar plugin enables top bar with input for spec path and explore button or a dropdown if `urls` is used. By default the plugin is enabled, and to disable it you need to remove Topbar plugin from presets in `src/standalone/index.js`:
+
+```
+let preset = [
+  // TopbarPlugin,
+  ConfigsPlugin,
+  () => {
+    return {
+      components: { StandaloneLayout }
+    }
+  }
+]
+```
+
+#### Configs plugin
+Configs plugin allows to fetch external configs instead of passing them to `SwaggerUIBundle`. Fetched configs support two formats: JSON or yaml. The plugin is enabled by default.
+There are three options of passing config:
+- add a query parameter `config` with URL to a server where the configs are hosted. For ex. http://petstore.swagger.io/?config=http://localhost:3001/config.yaml
+- add a config `configUrl` with URL to SwaggerUIBundle
+- change default configs in `swagger-config.yaml` *Note: after changing, the project must be re-built*
+
+These options can be used altogether, the order of inheritance is following (from the lowest priority to the highest):
+`swagger-config.yaml` -> config passed to `SwaggerUIBundle` -> config fetched from `configUrl` passed to `SwaggerUIBundle` -> config fetched from URL passed as a query parameter `config`
+
+## CORS Support
+
+CORS is a technique to prevent websites from doing bad things with your personal data.  Most browsers + JavaScript toolkits not only support CORS but enforce it, which has implications for your API server which supports Swagger.
+
+You can read about CORS here: http://www.w3.org/TR/cors.
+
+There are two cases where no action is needed for CORS support:
+
+1. swagger-ui is hosted on the same server as the application itself (same host *and* port).
+2. The application is located behind a proxy that enables the required CORS headers. This may already be covered within your organization.
+
+Otherwise, CORS support needs to be enabled for:
+
+1. Your Swagger docs. For Swagger 2.0 it's the `swagger.json`/`swagger.yaml` and any externally `$ref`ed docs.
+2. For the `Try it now` button to work, CORS needs to be enabled on your API endpoints as well.
+
+### Testing CORS Support
+
+You can verify CORS support with one of three techniques:
+
+- Curl your API and inspect the headers.  For instance:
+
+```bash
+$ curl -I "http://petstore.swagger.io/v2/swagger.json"
+HTTP/1.1 200 OK
+Date: Sat, 31 Jan 2015 23:05:44 GMT
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET, POST, DELETE, PUT, PATCH, OPTIONS
+Access-Control-Allow-Headers: Content-Type, api_key, Authorization
+Content-Type: application/json
+Content-Length: 0
+```
+
+This tells us that the petstore resource listing supports OPTIONS, and the following headers:  `Content-Type`, `api_key`, `Authorization`.
+
+- Try swagger-ui from your file system and look at the debug console.  If CORS is not enabled, you'll see something like this:
+
+```
+XMLHttpRequest cannot load http://sad.server.com/v2/api-docs. No 'Access-Control-Allow-Origin' header is present on the requested resource. Origin 'null' is therefore not allowed access.
+```
+
+Swagger-UI cannot easily show this error state.
+
+- Using the http://www.test-cors.org website. Keep in mind this will show a successful result even if `Access-Control-Allow-Headers` is not available, which is still required for Swagger-UI to function properly.
+
+### Enabling CORS
+
+The method of enabling CORS depends on the server and/or framework you use to host your application. http://enable-cors.org provides information on how to enable CORS in some common web servers.
+
+Other servers/frameworks may provide you information on how to enable it specifically in their use case.
+
+### CORS and Header Parameters
+
+Swagger lets you easily send headers as parameters to requests.  The name of these headers *MUST* be supported in your CORS configuration as well.  From our example above:
+
+```
+Access-Control-Allow-Headers: Content-Type, api_key, Authorization
+```
+
+Only headers with these names will be allowed to be sent by Swagger-UI.
+
+## License
+
+Copyright 2017 SmartBear Software
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
