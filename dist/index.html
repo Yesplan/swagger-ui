@@ -39,7 +39,7 @@
     window.onload = function() {
       // Begin Swagger UI call region
       const ui = SwaggerUIBundle({
-         url: ((window.location.protocol == "file:") ? "http://localhost:8080" : (window.location.protocol + "//" + window.location.hostname + (window.location.port == "" ? "" : ":" + window.location.port))) + "/api/swagger.json",
+        url: ((window.location.protocol == "file:") ? "http://localhost:8080" : (window.location.protocol + "//" + window.location.hostname + (window.location.port == "" ? "" : ":" + window.location.port))) + "/api/openapi.json",
         dom_id: '#swagger-ui',
         deepLinking: true,
         presets: [
