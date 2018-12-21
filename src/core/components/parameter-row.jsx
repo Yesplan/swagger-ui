@@ -145,12 +145,13 @@ export default class ParameterRow extends Component {
 
     let paramWithMeta = specSelectors.parameterWithMetaByIdentity(pathMethod, rawParam)
     let format = param.get("format")
-    let schema = isOAS3 && isOAS3() ? param.get("schema") : param
+    let schema = isOAS3 && isOAS3() ? param.get("schema") || { get: () => undefined, getIn: () => undefined } : param
     let type = schema.get("type")
     let isFormData = inType === "formData"
     let isFormDataSupported = "FormData" in win
     let required = param.get("required")
     let itemType = schema.getIn(["items", "type"])
+    let isFlag = param.get("x-isFlag")
 
     let value = paramWithMeta ? paramWithMeta.get("value") : ""
     let commonExt = showCommonExtensions ? getCommonExtensions(param) : null
@@ -224,7 +225,7 @@ export default class ParameterRow extends Component {
 
           {(isFormData && !isFormDataSupported) && <div>Error: your browser does not support FormData</div>}
 
-          { bodyParam || !isExecute ? null
+          { bodyParam || isFlag || !isExecute ? null
             : <JsonSchemaForm fn={fn}
                               getComponent={getComponent}
                               value={ value }

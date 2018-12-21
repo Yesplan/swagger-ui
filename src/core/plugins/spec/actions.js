@@ -345,9 +345,16 @@ export const executeRequest = (req) =>
     
     // ensure that explicitly-included params are in the request
 
+    // HACK: Use a dummy value for flags (a single U+10FFFF character)
+    // so that the parameter gets included in the URL, but the value
+    // and the preceding '=' character can then be stripped, leaving
+    // just the name of the flag parameters
+    const flagsDummyValue = "\uDBFF\uDFFF"
+    const stripFlagsDummyValueAssignmentFromURL = function (r) {
+      r.url = r.url.replace(/=%F4%8F%BF%BF/g, "") }
     if(op && op.parameters && op.parameters.length) {
       op.parameters
-        .filter(param => param && param.allowEmptyValue === true)
+        .filter(param => param && (param["x-isFlag"] || param.allowEmptyValue === true))
         .forEach(param => {
           if (specSelectors.parameterInclusionSettingFor([pathName, method], param.name, param.in)) {
             req.parameters = req.parameters || {}
@@ -357,7 +364,7 @@ export const executeRequest = (req) =>
             if(!paramValue || (paramValue && paramValue.size === 0)) {
               // set it to empty string, so Swagger Client will treat it as
               // present but empty.
-              req.parameters[param.name] = ""
+              req.parameters[param.name] = param["x-isFlag"] ? flagsDummyValue : ""
             }
           }
         })
@@ -400,10 +407,12 @@ export const executeRequest = (req) =>
 
     let parsedRequest = Object.assign({}, req)
     parsedRequest = fn.buildRequest(parsedRequest)
+    stripFlagsDummyValueAssignmentFromURL(parsedRequest)
 
     specActions.setRequest(req.pathName, req.method, parsedRequest)
 
     let requestInterceptorWrapper = function(r) {
+      stripFlagsDummyValueAssignmentFromURL(r)
       let mutatedRequest = requestInterceptor.apply(this, [r])
       let parsedMutatedRequest = Object.assign({}, mutatedRequest)
       specActions.setMutatedRequest(req.pathName, req.method, parsedMutatedRequest)

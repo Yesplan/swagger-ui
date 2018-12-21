@@ -7,14 +7,14 @@ export const ParameterIncludeEmpty = ({ param, isIncluded, onChange, isDisabled 
   const onCheckboxChange = e => {
     onChange(e.target.checked)
   }
-  if(!param.get("allowEmptyValue")) {
+  if(!param.get("x-isFlag") && !param.get("allowEmptyValue")) {
     return null
   }
   return <div className={cx("parameter__empty_value_toggle", {
     "disabled": isDisabled
   })}>
     <input type="checkbox" disabled={isDisabled} checked={!isDisabled && isIncluded} onChange={onCheckboxChange} />
-    Send empty value
+    { param.get("x-isFlag") ? "Add to URL" : "Send empty value" }
   </div>
 }
 ParameterIncludeEmpty.propTypes = {
