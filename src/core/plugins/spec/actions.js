@@ -405,14 +405,20 @@ export const executeRequest = (req) =>
       }
     }
 
+    const stripFragmentFromURL = function (r) {
+      r.url = r.url.replace(/#[^?]*/g, "")
+    }
+
     let parsedRequest = Object.assign({}, req)
     parsedRequest = fn.buildRequest(parsedRequest)
     stripFlagsDummyValueAssignmentFromURL(parsedRequest)
+    stripFragmentFromURL(parsedRequest)
 
     specActions.setRequest(req.pathName, req.method, parsedRequest)
 
     let requestInterceptorWrapper = function(r) {
       stripFlagsDummyValueAssignmentFromURL(r)
+      stripFragmentFromURL(r)
       let mutatedRequest = requestInterceptor.apply(this, [r])
       let parsedMutatedRequest = Object.assign({}, mutatedRequest)
       specActions.setMutatedRequest(req.pathName, req.method, parsedMutatedRequest)
