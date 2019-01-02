@@ -70,5 +70,8 @@ module.exports = require("./make-webpack-config")(rules, {
     stats: {
       colors: true
     },
+    proxy: {
+	  '/api': 'http://localhost:8080'
+	}
   },
 })
