@@ -217,6 +217,9 @@ export default class OperationContainer extends PureComponent {
       tryItOutEnabled: this.state.tryItOutEnabled
     })
 
+    const queryParameters = unresolvedOp.getIn(["operation", "parameters"], []).filter((parameter) => parameter.get("in") == "query").filter((parameter) => parameter.get("name") != "book" && parameter.get("name") != "page")
+    const queryTemplate = (queryParameters.size == 0) ? null : queryParameters.reduce((string, parameter) => string + ((string != "?") ? "&" : "") + parameter.get("name") + ((parameter.get("x-isFlag")) ? "" : "={" + parameter.get("name") + "}"), "?")
+
     return (
       <Operation
         operation={operationProps}
@@ -241,6 +244,8 @@ export default class OperationContainer extends PureComponent {
         getComponent={ getComponent }
         getConfigs={ getConfigs }
         fn={fn}
+
+        queryTemplate={queryTemplate}
       />
     )
   }

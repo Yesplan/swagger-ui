@@ -10,6 +10,7 @@ export default class OperationSummaryPath extends PureComponent{
     specPath: ImPropTypes.list.isRequired,
     operationProps: PropTypes.instanceOf(Iterable).isRequired,
     getComponent: PropTypes.func.isRequired,
+    queryTemplate: PropTypes.string.isRequired
   }
 
   render(){
@@ -36,7 +37,7 @@ export default class OperationSummaryPath extends PureComponent{
                   enabled={isDeepLinkingEnabled}
                   isShown={isShown}
                   path={createDeepLinkPath(`${tag}/${operationId}`)}
-                  text={path.replace(/#[^?]*/g, "")} />
+                  text={path.replace(/#[^?]*/g, "") + ((this.props.queryTemplate) ? this.props.queryTemplate : "")} />
               </span>
 
     )

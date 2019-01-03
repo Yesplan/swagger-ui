@@ -14,6 +14,7 @@ export default class OperationSummary extends PureComponent {
     getConfigs: PropTypes.func.isRequired,
     authActions: PropTypes.object,
     authSelectors: PropTypes.object,
+    queryTemplate: PropTypes.string.isRequired
   }
 
   static defaultProps = {
@@ -59,7 +60,7 @@ export default class OperationSummary extends PureComponent {
 
       <div className={`opblock-summary opblock-summary-${method}`} onClick={toggleShown} >
         <OperationSummaryMethod method={method} />
-        <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} />
+        <OperationSummaryPath getComponent={getComponent} operationProps={operationProps} specPath={specPath} queryTemplate={this.props.queryTemplate} />
 
         {!showSummary ? null :
           <div className="opblock-summary-description">
